@@ -323,6 +323,8 @@ export class UITreeNode implements OnInit {
 })
 export class Tree implements OnInit,AfterContentInit,OnDestroy {
 
+    @Input('compareFunction') compareFunction: Function;
+    
     @Input() value: TreeNode[];
         
     @Input() selectionMode: string;
@@ -559,7 +561,13 @@ export class Tree implements OnInit,AfterContentInit,OnDestroy {
     findIndexInSelection(node: TreeNode) {
         let index: number = -1;
 
-        if(this.selectionMode && this.selection) {
+        if (this.compareFunction) {
+            // a function to customize node selection verification
+            // node : node currently being inspected
+            // this.selection : current selection holder
+            // this.selectionMode: single, multiple ..
+            index = this.compareFunction(node,  this.selection,  this.selectionMode);
+        } else if(this.selectionMode && this.selection) {
             if(this.isSingleSelectionMode()) {
                 index = (this.selection == node) ? 0 : - 1;
             }
